@@ -1,0 +1,40 @@
+plugins {
+    id 'java'
+    id 'org.spongepowered.mixin' version '0.8-SNAPSHOT'
+}
+
+group 'com.client'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    maven { url 'https://repo.spongepowered.org/repository/maven-public/' }
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    // Mixin untuk inject kode ke Minecraft
+    implementation 'org.spongepowered:mixin:0.8.5'
+    
+    // Lombok biar gak capek ngetik Getter/Setter
+    compileOnly 'org.projectlombok:lombok:1.18.24'
+    annotationProcessor 'org.projectlombok:lombok:1.18.24'
+    
+    // Google Gson (biasanya sudah ada di MC, tapi buat jaga-jaga)
+    implementation 'com.google.code.gson:gson:2.8.9'
+}
+
+mixin {
+    add sourceSets.main, "mixins.client.refmap.json"
+}
+
+jar {
+    manifest {
+        attributes(
+            'MixinConfigs': 'mixins.client.json',
+            'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
+            'TweakOrder': 0,
+            'Manifest-Version': 1.0
+        )
+    }
+}
